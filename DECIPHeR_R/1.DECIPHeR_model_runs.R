@@ -3,7 +3,7 @@
 #Created April 2020
 #Last modified February 2021
 #Script used for subsetting DECIPHeR raw outputs into different gauges and calculating goodness of fit metrics
-setwd('D:/DECIPHeR/Outputs/2021_03_04') #set model run directory
+setwd('D:/DECIPHeR/Outputs/2021_04_16') #set model run directory
 library(reshape2)
 library(dplyr)
 library(lubridate)
@@ -29,7 +29,7 @@ rm(list=ls()) #clear R environment
 
 #1.2 Merge into one file
 #!!!! Make sure date.time file is not in the folder or previous files created in this script!!!!#
-file_list <- list.files(path="D:/DECIPHeR/Outputs/2021_03_04", pattern = ('\\.flow')) #lists the simulations, change to appropriate file
+file_list <- list.files(path="D:/DECIPHeR/Outputs/2021_04_16", pattern = ('\\.flow')) #lists the simulations, change to appropriate file
 f <- lapply(file_list, read.delim, header = TRUE, sep = "", row.names=NULL)
 f <- do.call(cbind, f)
 
@@ -50,7 +50,7 @@ TS <- f[seq(1, ncol(f), 3) ] #creates index from row 1 every 3 rows
 date.time <- read.delim("D:/DECIPHeR/Outputs/date.time_ceh.txt")
 qobsTS <- read.delim("D:/DECIPHeR/OUTPUTS/tamarstone_qobs_ceh.txt")
 TS <- cbind(date.time, qobsTS, TS)
-subsetTS <- TS[c(59952:94104),] #subsets years of TS gauge
+subsetTS <- TS[-c(1:4346),] #subsets years of TS gauge add 59952:94104
 colnames(subsetTS) <- c("date.time", "Qobs", 1:1000) #change to number of simulations
 write.table(subsetTS, sep = "\t", file = "Tamarstone_all.txt")
 
@@ -77,14 +77,14 @@ mean(all_NSE_calcs$Qobs) #NSE mean
 
 #Extract NSE values above a threshold
 ok_NSE <- all_NSE_calcs %>%
-  filter(Qobs > 0.85 ) %>%   # NSE criteria
+  filter(Qobs > 0.78 ) %>%   # NSE criteria
   pull(qsimID)  # gives you a list of cols that match your NSE criteria
 
 sub_df <- df_ts %>%
   select(ok_NSE)
 
 NSE_date.time <- read.delim("D:/DECIPHeR/Outputs/date.timeNSE_ts_ceh.txt") #change to correct date.time file
-NSE_qsim <- cbind(NSE_date.time, sub_df) #combine date and time (- 6 months) with Qsims and Qobs
+NSE_qsim <- cbind(NSE_date.time, obs, sub_df) #combine date and time (- 6 months) with Qsims and Qobs
 write.table(NSE_qsim, sep = "\t", file = "TS_NSE_Qsim.txt", row.names = FALSE) #write file for simulations above NSE threshold
 write.table(all_NSE_calcs, sep = "\t", file = "TS_NSE_scores.txt", row.names = FALSE) #write file of all the NSE scores
 
@@ -113,7 +113,7 @@ sub_df <- df_cf %>%
   select(ok_NSE)
 
 NSE_date.time <- read.delim("D:/DECIPHeR/Outputs/date.timeNSE_cf_ceh.txt") #change to correct date.time file
-NSE_qsim <- cbind(NSE_date.time, sub_df) #combine date and time (- 6 months) with Qsims and Qobs
+NSE_qsim <- cbind(NSE_date.time, obs, sub_df) #combine date and time (- 6 months) with Qsims and Qobs
 write.table(NSE_qsim, sep = "\t", file = "CF_NSE_Qsim.txt", row.names = FALSE) #write file for simulations above NSE threshold
 write.table(all_NSE_calcs, sep = "\t", file = "CF_NSE_scores.txt", row.names = FALSE)
 
@@ -215,8 +215,8 @@ write.table(df, sep = '\t', file = 'final_score_Tamarstone.txt', row.names = FAL
 #4.1.4 Final simulations
 sim <- read.delim('Tamarstone_all.txt')
 ##insert columns of selected simulations from df
-final <- cbind(sim$date.time, sim$Qobs, sim$X602, sim$X461, sim$X711, sim$X31, sim$X52, sim$X733, sim$X294, sim$X127, sim$X308, sim$X379)
-colnames(final) <- c('date.time', 'Qobs', 602, 461, 711, 31, 52, 733, 294, 127, 308, 379)
+final <- cbind(sim$date.time, sim$Qobs, sim$X258, sim$X971, sim$X729, sim$X898, sim$X320, sim$X380, sim$X415, sim$X806, sim$X66, sim$X2)
+colnames(final) <- c('date.time', 'Qobs', 258, 971, 729, 898, 320, 380, 415, 806, 66, 2)
 write.table(final, sep = '\t', file = 'final_simulations_Tamarstone.txt', row.names = FALSE)
 
 
@@ -263,8 +263,8 @@ write.table(df, sep = '\t', file = 'final_score_Crowford.txt')
 #4.2.4 Final simulations
 sim <- read.delim('Crowford_all.txt')
 ##insert columns of selected simulations from df
-final <- cbind(sim$date.time, sim$Qobs, sim$X154, sim$X155, sim$X687, sim$X107, sim$X328, sim$X59, sim$X535, sim$X99, sim$X577, sim$X644)
-colnames(final) <- c('date.time', 'Qobs', 154, 155, 687, 170, 328, 59, 535, 99, 577, 664)
+final <- cbind(sim$date.time, sim$Qobs, sim$X258, sim$X971, sim$X729, sim$X898, sim$X320, sim$X380, sim$X415, sim$X806, sim$X66, sim$X2)
+colnames(final) <- c('date.time', 'Qobs', 258, 971, 729, 898, 320, 380, 415, 806, 66, 2)
 write.table(final, sep = '\t', file = 'final_simulations_Crowford.txt', row.names = FALSE)
 
 
