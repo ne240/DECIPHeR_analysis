@@ -1,0 +1,61 @@
+#Plot parameter scatter plots
+setwd('D:/DECIPHeR/Outputs/21/04/16')
+library(ggplot2)
+library(cowplot)
+library(dplyr)
+
+df <- read.delim('D:/DECIPHeR/Outputs/2021_04_16/parameters.txt')
+df <- df %>% filter(df$Param_class == 1) #filter to parameter 1
+nse <- read.delim('D:/DECIPHeR/Outputs/2021_04_16/CF_NSE_scores.txt')
+df <- cbind(nse, df)
+
+#---Function for graph plotting. '.x' is something that needs to be specified---#
+all_plot <- function(.x, .xlab) {
+  ggplot(df, aes(x = .x, y = Qobs)) +
+    geom_point(size = 1, shape = 18, colour = "grey30") +
+    ylab('NSE') +
+    xlab(.xlab) +
+    theme_minimal() +  theme(legend.key = element_blank(),
+                             legend.title=element_blank(),
+                             legend.position = "bottom",
+                             axis.line.x = element_line(color="black"),
+                             axis.line.y = element_line(color="black"),
+                             axis.title.x = element_text(size = 11),
+                             axis.title.y = element_text(size = 11),
+                             axis.text.x = element_text(size = 11),
+                             axis.text.y = element_text(size = 11))
+}
+
+g1 <- all_plot(.x = df$lnto_def, .xlab = 'Lnt0')
+g2 <- all_plot(.x = df$szm_def, .xlab = 'SZM')
+g3 <- all_plot(.x = df$srinit_def, .xlab = 'Srinit')
+g4 <- all_plot(.x = df$chv_def, .xlab = 'CHV')
+g5 <- all_plot(.x = df$td_def, .xlab = 'Td')
+g6 <- all_plot(.x = df$smax_def, .xlab = 'Smax')
+g7 <- all_plot(.x = df$srmax_def, .xlab = 'Srmax')
+
+#merge graphs
+plot_grid(g1, g2, g3, g4, g5, g6, g7, ncol = 3, nrow = 3, align = "v")
+
+#---NSE score graph---#
+nse1 <- read.delim('D:/DECIPHeR/Outputs/2021_03_17/final_score_Crowford.txt')
+nse2 <- read.delim('D:/DECIPHeR/Outputs/2021_03_17/final_score_Tamarstone.txt')
+#reorder simulations
+nse1 <- nse1[order(nse1$sim),]
+nse2 <- nse2[order(nse2$sim),]
+nse <- cbind(nse1$sum, nse2$sum)
+colnames(nse) <- c('CF', 'TS')
+nse <- data.frame(nse)
+
+ggplot(nse, aes(x = CF, y = TS)) +
+  geom_point(size = 2, shape = 4, colour = 'grey50') +
+  geom_smooth(method = lm, se = FALSE, col = 'darkred') +
+  ylab('Tamarstone') +
+  xlab('Crowford') +
+  theme_minimal() +  theme(legend.key = element_blank(),
+                           legend.title=element_blank(),
+                           legend.position = "bottom",
+                           axis.line.x = element_line(color="black"),
+                           axis.line.y = element_line(color="black"))
+#Test for significance
+cor.test(nse$CF, nse$TS, method = 'pearson')
