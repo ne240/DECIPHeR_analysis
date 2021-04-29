@@ -4,7 +4,7 @@
 #Last modified: February 2021
 #Separating different gauge simulations from original data and model runs.
 
-setwd('D:/DECIPHeR/Outputs/Scenarios/-35/Sim_30')
+setwd('D:/DECIPHeR/Outputs/Scenarios/Simulations_30')
 library(tidyverse)
 
 #OPTION 1 (raw data script):
@@ -20,55 +20,55 @@ cf_qsim <- function(.x, .n) {
   CF <- cbind(CF, precip)
   colnames(CF) <- c('datetime', 'q', 'rainfall')
   CF$rainfall <- CF$rainfall * 1000 #convert from m to mm
-  CF$q <- CF$q * 277777.77878788 #convert from m/hr to mm/sec
+  CF$q <- (CF$q * 75500000)/3600 #convert from m/hr to m/sec and normalise for catchment size
   write.csv(CF, row.names = FALSE, file = .n)
 }
 
 #Qsim
-cf_qsim(.x = ('tamar_sim59.flow'), .n = 'CF_qsim59_30.csv')
-cf_qsim(.x = ('tamar_sim99.flow'), .n = 'CF_qsim99_30.csv')
-cf_qsim(.x = ('tamar_sim154.flow'), .n = 'CF_qsim154_30.csv')
-cf_qsim(.x = ('tamar_sim155.flow'), .n = 'CF_qsim155_30.csv')
-cf_qsim(.x = ('tamar_sim170.flow'), .n = 'CF_qsim170_30.csv')
-cf_qsim(.x = ('tamar_sim328.flow'), .n = 'CF_qsim328_30.csv')
-cf_qsim(.x = ('tamar_sim535.flow'), .n = 'CF_qsim535_30.csv')
-cf_qsim(.x = ('tamar_sim577.flow'), .n = 'CF_qsim577_30.csv')
-cf_qsim(.x = ('tamar_sim664.flow'), .n = 'CF_qsim664_30.csv')
-cf_qsim(.x = ('tamar_sim687.flow'), .n = 'CF_qsim687_30.csv')
+cf_qsim(.x = ('tamar_sim2.flow'), .n = 'CF_qsim2_30.csv')
+cf_qsim(.x = ('tamar_sim66.flow'), .n = 'CF_qsim66_30.csv')
+cf_qsim(.x = ('tamar_sim258.flow'), .n = 'CF_qsim258_30.csv')
+cf_qsim(.x = ('tamar_sim320.flow'), .n = 'CF_qsim320_30.csv')
+cf_qsim(.x = ('tamar_sim380.flow'), .n = 'CF_qsim380_30.csv')
+cf_qsim(.x = ('tamar_sim415.flow'), .n = 'CF_qsim415_30.csv')
+cf_qsim(.x = ('tamar_sim729.flow'), .n = 'CF_qsim729_30.csv')
+cf_qsim(.x = ('tamar_sim806.flow'), .n = 'CF_qsim806_30.csv')
+cf_qsim(.x = ('tamar_sim898.flow'), .n = 'CF_qsim898_30.csv')
+cf_qsim(.x = ('tamar_sim971.flow'), .n = 'CF_qsim971_30.csv')
 
 
 #---TAMARSTONE---#
-precipts <- read.delim('D:/DECIPHeR/Outputs/Tamarstone_precip.txt')
-date.time_ts <- read.delim('D:/DECIPHeR/Outputs/date.timeNSE_ts_ceh.txt')
+date.time <- read.delim('D:/DECIPHeR/Outputs/date.time_ceh.txt', header = TRUE)
+precip <- read.delim('D:/DECIPHeR/Outputs/Cf_precip_clip.txt')
 ts_qsim <- function(.x, .n) {
   qsim <- read.delim(.x, sep = '', header = TRUE)
   qsim <- qsim %>% select(1)
-  TS <- qsim[c(59952:94104),]
-  TS <- cbind(date.time_ts, TS)
-  TS <- cbind(TS, precipts)
-  colnames(TS) <- c('datetime', 'q', 'rainfall')
-  TS$rainfall <- TS$rainfall * 1000 #convert from m to mm
-  TS$q <- TS$q * 277777.77878788 #convert from m/hr to mm/sec
-  write.csv(TS, row.names = FALSE, file = .n)
+  CF <- cbind(date.time, qsim)
+  CF <- CF[-c(1:4346),]
+  CF <- cbind(CF, precip)
+  colnames(CF) <- c('datetime', 'q', 'rainfall')
+  CF$rainfall <- CF$rainfall * 1000 #convert from m to mm
+  CF$q <- (CF$q * 48100000)/3600 #convert from m/hr to m/sec and normalise for catchment size
+  write.csv(CF, row.names = FALSE, file = .n)
 }
 
 #Qsim
-ts_qsim(.x = ('tamar_sim59.flow'), .n = 'TS_qsim59_30.csv')
-ts_qsim(.x = ('tamar_sim99.flow'), .n = 'TS_qsim99_30.csv')
-ts_qsim(.x = ('tamar_sim154.flow'), .n = 'TS_qsim154_30.csv')
-ts_qsim(.x = ('tamar_sim155.flow'), .n = 'TS_qsim155_30.csv')
-ts_qsim(.x = ('tamar_sim170.flow'), .n = 'TS_qsim170_30.csv')
-ts_qsim(.x = ('tamar_sim328.flow'), .n = 'TS_qsim328_30.csv')
-ts_qsim(.x = ('tamar_sim535.flow'), .n = 'TS_qsim535_30.csv')
-ts_qsim(.x = ('tamar_sim577.flow'), .n = 'TS_qsim577_30.csv')
-ts_qsim(.x = ('tamar_sim664.flow'), .n = 'TS_qsim664_30.csv')
-ts_qsim(.x = ('tamar_sim687.flow'), .n = 'TS_qsim687_30.csv')
+ts_qsim(.x = ('tamar_sim2.flow'), .n = 'TS_qsim2_30.csv')
+ts_qsim(.x = ('tamar_sim66.flow'), .n = 'TS_qsim66_30.csv')
+ts_qsim(.x = ('tamar_sim258.flow'), .n = 'TS_qsim258_30.csv')
+ts_qsim(.x = ('tamar_sim320.flow'), .n = 'TS_qsim320_30.csv')
+ts_qsim(.x = ('tamar_sim380.flow'), .n = 'TS_qsim380_30.csv')
+ts_qsim(.x = ('tamar_sim415.flow'), .n = 'TS_qsim415_30.csv')
+ts_qsim(.x = ('tamar_sim729.flow'), .n = 'TS_qsim729_30.csv')
+ts_qsim(.x = ('tamar_sim806.flow'), .n = 'TS_qsim806_30.csv')
+ts_qsim(.x = ('tamar_sim898.flow'), .n = 'TS_qsim898_30.csv')
+ts_qsim(.x = ('tamar_sim971.flow'), .n = 'TS_qsim971_30.csv')
 
-#OPTION 2: (Post metrics processing, has been run through DECIPHeR_output.R first)
+#OPTION 2: (Post metrics processing, has been run through DECIPHeR_model_runs.R first)
 #Tamarstone
 df_TS <- read.delim('final_simulations_Tamarstone.txt')
-precip_TS <- read.delim('D:/DECIPHeR/Outputs/Tamarstone_precip.txt')
-df_TS <- cbind(df_TS, precip_TS$precip)
+precip_TS <- read.delim('D:/DECIPHeR/Outputs/Cf_precip_clip.txt')
+df_TS <- cbind(df_TS, precip_TS$rainfall)
 colnames(df_TS)[13] <- c('rainfall')
 
 ts_qsim <- function(.x, .n) {
@@ -76,20 +76,20 @@ ts_qsim <- function(.x, .n) {
   ts <- ts %>% select(1, .x, 13)
   colnames(ts) <- c('datetime', 'q', 'rainfall')
   ts$rainfall <- ts$rainfall * 1000 #convert from m to mm
-  ts$q <- ts$q * 277777.77878788 #convert from m/hr to mm/sec
+  ts$q <- (ts$q * 48100000)/3600 #convert from m/hr to m/sec and normalise for catchment size
   write.csv(ts, row.names = FALSE, file = .n)
 }
 
-ts_qsim(.x = 3, .n = 'TF_sim59.csv')
-ts_qsim(.x = 4, .n = 'TF_sim99.csv')
-ts_qsim(.x = 5, .n = 'TF_sim154.csv')
-ts_qsim(.x = 6, .n = 'TF_sim155.csv')
-ts_qsim(.x = 7, .n = 'TF_sim170.csv')
-ts_qsim(.x = 8, .n = 'TF_sim328.csv')
-ts_qsim(.x = 9, .n = 'TF_sim535.csv')
-ts_qsim(.x = 10, .n = 'TF_sim577.csv')
-ts_qsim(.x = 11, .n = 'TF_sim664.csv')
-ts_qsim(.x = 12, .n = 'TF_sim687.csv')
+ts_qsim(.x = 3, .n = 'TS_sim258.csv')
+ts_qsim(.x = 4, .n = 'TS_sim971.csv')
+ts_qsim(.x = 5, .n = 'TS_sim729.csv')
+ts_qsim(.x = 6, .n = 'TS_sim898.csv')
+ts_qsim(.x = 7, .n = 'TS_sim320.csv')
+ts_qsim(.x = 8, .n = 'TS_sim380.csv')
+ts_qsim(.x = 9, .n = 'TS_sim415.csv')
+ts_qsim(.x = 10, .n = 'TS_sim806.csv')
+ts_qsim(.x = 11, .n = 'TS_sim66.csv')
+ts_qsim(.x = 12, .n = 'TS_sim2.csv')
 
 #Crowford
 df_CF <- read.delim('final_simulations_Crowford.txt')
@@ -102,30 +102,30 @@ cf_qsim <- function(.x, .n) {
   cf <- cf %>% select(1, .x, 13)
   colnames(cf) <- c('datetime', 'q', 'rainfall')
   cf$rainfall <- cf$rainfall * 1000 #convert from m to mm
-  cf$q <- cf$q * 277777.77878788 #convert from m/hr to mm/sec
+  cf$q <- (cf$q * 75500000)/3600 #convert from m/hr to mm/sec
   write.csv(cf, row.names = FALSE, file = .n)
 }
 
-cf_qsim(.x = 3, .n = 'CF_sim154.csv')
-cf_qsim(.x = 4, .n = 'CF_sim155.csv')
-cf_qsim(.x = 5, .n = 'CF_sim687.csv')
-cf_qsim(.x = 6, .n = 'CF_sim170.csv')
-cf_qsim(.x = 7, .n = 'CF_sim328.csv')
-cf_qsim(.x = 8, .n = 'CF_sim59.csv')
-cf_qsim(.x = 9, .n = 'CF_sim535.csv')
-cf_qsim(.x = 10, .n = 'CF_sim99.csv')
-cf_qsim(.x = 11, .n = 'CF_sim577.csv')
-cf_qsim(.x = 12, .n = 'CF_sim664.csv')
+cf_qsim(.x = 3, .n = 'CF_sim258.csv')
+cf_qsim(.x = 4, .n = 'CF_sim971.csv')
+cf_qsim(.x = 5, .n = 'CF_sim729.csv')
+cf_qsim(.x = 6, .n = 'CF_sim898.csv')
+cf_qsim(.x = 7, .n = 'CF_sim320.csv')
+cf_qsim(.x = 8, .n = 'CF_sim380.csv')
+cf_qsim(.x = 9, .n = 'CF_sim415.csv')
+cf_qsim(.x = 10, .n = 'CF_sim806.csv')
+cf_qsim(.x = 11, .n = 'CF_sim66.csv')
+cf_qsim(.x = 12, .n = 'CF_sim2.csv')
 
 #Extension: Combining the same simulations
 setwd('D:/DECIPHeR/Outputs/Scenarios/-35')
 
-org <- read.csv('D:/DECIPHeR/Outputs/2021_03_04/CF_sim577.csv')
-x10 <- read.csv('D:/DECIPHeR/Outputs/Scenarios/-35/Sim_10/CF_qsim577_10.csv')
-x20 <- read.csv('D:/DECIPHeR/Outputs/Scenarios/-35/Sim_20/CF_qsim577_20.csv')
-x30 <- read.csv('D:/DECIPHeR/Outputs/Scenarios/-35/Sim_30/CF_qsim577_30.csv')
+org <- read.csv('D:/DECIPHeR/Outputs/2021_03_17/CF_sim2.csv')
+x10 <- read.csv('D:/DECIPHeR/Outputs/Scenarios/+35/Sim_10/CF_qsim2_10.csv')
+x20 <- read.csv('D:/DECIPHeR/Outputs/Scenarios/+35/Sim_20/CF_qsim2_20.csv')
+x30 <- read.csv('D:/DECIPHeR/Outputs/Scenarios/+35/Sim_30/CF_qsim2_30.csv')
 
 all <- cbind(org, x10$q, x20$q, x30$q)
 colnames(all) <- c('datetime', 'Original_Q', 'rainfall', '10_Q', '20_Q', '30_Q')
-write.table(all, sep = '\t', file = 'all_sim577_Q_CF.txt')
+write.table(all, sep = '\t', file = 'all_sim2_Q_CF.txt')
 
